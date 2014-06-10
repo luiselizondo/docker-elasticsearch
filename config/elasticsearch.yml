@@ -1,0 +1,5 @@
+path:
+  logs: /var/log/supervisor/elasticsearch
+  data: /data
+cluster:
+  name: elasticsearch-cluster

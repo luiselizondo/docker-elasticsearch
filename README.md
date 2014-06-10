@@ -1,43 +1,27 @@
 ## ElasticSearch Dockerfile
 
-
 This repository contains **Dockerfile** of [ElasticSearch](http://www.elasticsearch.org/) for [Docker](https://www.docker.io/)'s [trusted build](https://index.docker.io/u/dockerfile/elasticsearch/) published to the public [Docker Registry](https://index.docker.io/).
-
 
 ### Dependencies
 
 * [dockerfile/java](http://dockerfile.github.io/#/java)
 
-
 ### Installation
-
-1. Install [Docker](https://www.docker.io/).
-
-2. Download [trusted build](https://index.docker.io/u/dockerfile/elasticsearch/) from public [Docker Registry](https://index.docker.io/): `docker pull dockerfile/elasticsearch`
-
-   (alternatively, you can build an image from Dockerfile: `docker build -t="dockerfile/elasticsearch" github.com/dockerfile/elasticsearch`)
-
+  
+    docker build -t="luis/elasticsearch" luis/elasticsearch
 
 ### Usage
 
-    docker run -d -p 9200:9200 -p 9300:9300 dockerfile/elasticsearch
+Create a volume-only container to persist the data:
 
-#### Attach persistent/shared directories
+    docker run -v /data --name ELASTICSEARCH busybox true
 
-  1. Create a mountable data directory `<data-dir>` on the host.
+Run the container:
 
-  2. Create ElasticSearch config file at `<data-dir>/elasticsearch.yml`.
+    docker run -d -p 9200:9200 -p 9300:9300 --volumes-from=ELASTICSEARCH luis/elasticsearch
 
-    ```yml
-    path:
-      logs: /data/log
-      data: /data/data
-    ```
+Alternatively, you can use volumes to persist data:
 
-  3. Start a container by mounting data directory and specifying the custom configuration file:
+    docker run -d -v /var/elasticsearch:/data -p 9200:9200 -p 9300:9300 luis/elasticsearch
 
-    ```sh
-    docker run -d -p 9200:9200 -p 9300:9300 -v <data-dir>:/data dockerfile/elasticsearch /elasticsearch/bin/elasticsearch -Des.config=/data/elasticsearch.yml
-    ```
-
-After few seconds, open `http://<host>:9200` to see the result.
+Open `http://<host>:9200` to see the result.
